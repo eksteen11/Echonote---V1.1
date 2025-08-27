@@ -4,6 +4,7 @@ import React from 'react';
 import { useAuth } from '@/lib/auth-context';
 import AuthPage from './AuthPage';
 import Layout from './Layout';
+import Dashboard from './Dashboard';
 
 const AuthWrapper: React.FC = () => {
   const { user, isLoading } = useAuth();
@@ -29,7 +30,11 @@ const AuthWrapper: React.FC = () => {
     return <AuthPage />;
   }
 
-  return <Layout />;
+  return (
+    <Layout>
+      <Dashboard />
+    </Layout>
+  );
 };
 
 export default AuthWrapper;
