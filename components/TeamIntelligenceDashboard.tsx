@@ -22,8 +22,7 @@ import {
   Minus
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { CrossMeetingInsight } from '@/lib/cross-meeting-intelligence';
-import { Prediction, ResourceForecast, WorkloadPrediction } from '@/lib/predictive-analytics';
+import { CrossMeetingInsight, Prediction, ResourceForecast, WorkloadPrediction } from '@/types';
 
 interface TeamIntelligenceData {
   insights: CrossMeetingInsight[];
