@@ -82,13 +82,13 @@ const TeamIntelligenceDashboard: React.FC = () => {
       insights: [
         {
           id: '1',
-          type: 'trend',
+          type: 'pattern',
           title: 'High Meeting Frequency Detected',
           description: 'December had 15 meetings, which is above the recommended threshold. Consider consolidating or optimizing meeting schedules.',
           confidence: 0.8,
           relatedMeetings: ['meeting_1', 'meeting_2'],
           participants: ['user_1', 'user_2'],
-          tags: ['trend', 'meeting-frequency', 'optimization'],
+          tags: ['pattern', 'meeting-frequency', 'optimization'],
           createdAt: new Date(),
           lastUpdated: new Date(),
           status: 'active'
