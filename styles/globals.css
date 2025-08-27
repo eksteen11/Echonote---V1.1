@@ -1,0 +1,188 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+@layer base {
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+  
+  body {
+    @apply bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100;
+    @apply text-slate-900;
+    @apply antialiased;
+  }
+  
+  * {
+    @apply border-slate-200;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/10 backdrop-blur-xl border border-white/20;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  }
+  
+  .glass-dark {
+    @apply bg-slate-900/10 backdrop-blur-xl border border-slate-700/20;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  }
+  
+  .btn-primary {
+    @apply bg-gradient-to-r from-primary-600 to-primary-700;
+    @apply hover:from-primary-700 hover:to-primary-800;
+    @apply text-white font-medium px-6 py-3 rounded-xl;
+    @apply transition-all duration-200 ease-in-out;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:-translate-y-0.5;
+  }
+  
+  .btn-secondary {
+    @apply bg-white/20 backdrop-blur-sm;
+    @apply hover:bg-white/30;
+    @apply text-slate-700 font-medium px-6 py-3 rounded-xl;
+    @apply border border-white/30;
+    @apply transition-all duration-200 ease-in-out;
+    @apply shadow-lg hover:shadow-xl;
+    @apply transform hover:-translate-y-0.5;
+  }
+  
+  .btn-ghost {
+    @apply bg-transparent hover:bg-white/10;
+    @apply text-slate-600 hover:text-slate-800;
+    @apply font-medium px-4 py-2 rounded-lg;
+    @apply transition-all duration-200 ease-in-out;
+  }
+  
+  .card {
+    @apply bg-white/80 backdrop-blur-xl;
+    @apply border border-white/30;
+    @apply rounded-2xl shadow-xl;
+    @apply p-6;
+  }
+  
+  .card-glass {
+    @apply glass rounded-2xl shadow-xl p-6;
+  }
+  
+  .input-field {
+    @apply w-full px-4 py-3 rounded-xl;
+    @apply bg-white/60 backdrop-blur-sm;
+    @apply border border-white/30;
+    @apply focus:bg-white/80 focus:border-primary-300;
+    @apply transition-all duration-200 ease-in-out;
+    @apply placeholder:text-slate-500;
+  }
+  
+  .sidebar-item {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl;
+    @apply text-slate-600 hover:text-slate-800;
+    @apply hover:bg-white/20 transition-all duration-200;
+    @apply cursor-pointer;
+  }
+  
+  .sidebar-item.active {
+    @apply bg-primary-50 text-primary-700;
+    @apply border border-primary-200;
+  }
+  
+  .status-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+  
+  .priority-badge {
+    @apply inline-flex items-center px-3 py-1 rounded-full text-xs font-medium;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary-600 to-accent-600;
+    @apply bg-clip-text text-transparent;
+  }
+  
+  .bg-gradient-radial {
+    background: radial-gradient(ellipse at center, var(--tw-gradient-stops));
+  }
+  
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+  
+  .animate-pulse-slow {
+    animation: pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-slate-300 rounded-full;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-slate-400;
+}
+
+/* Focus styles */
+*:focus-visible {
+  @apply outline-none ring-2 ring-primary-500 ring-offset-2;
+}
+
+/* Selection styles */
+::selection {
+  @apply bg-primary-100 text-primary-900;
+}
+
+/* Loading states */
+.loading {
+  @apply animate-pulse bg-slate-200 rounded;
+}
+
+/* Responsive text */
+@media (max-width: 640px) {
+  .text-responsive {
+    @apply text-sm;
+  }
+}
+
+@media (min-width: 641px) and (max-width: 1024px) {
+  .text-responsive {
+    @apply text-base;
+  }
+}
+
+@media (min-width: 1025px) {
+  .text-responsive {
+    @apply text-lg;
+  }
+}
