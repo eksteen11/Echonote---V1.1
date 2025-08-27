@@ -13,7 +13,6 @@ import {
   MoreVertical,
   Play,
   Pause,
-  Stop,
   FileText,
   CheckSquare,
   Tag,
@@ -364,7 +363,7 @@ export default function Meetings() {
                   
                   {meeting.status === 'in-progress' && (
                     <button className="p-2 rounded-lg hover:bg-slate-50 transition-colors">
-                      <Stop className="w-4 h-4 text-slate-600" />
+                      <Pause className="w-4 h-4 text-slate-600" />
                     </button>
                   )}
                   

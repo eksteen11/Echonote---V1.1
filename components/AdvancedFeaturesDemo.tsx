@@ -135,6 +135,7 @@ const AdvancedFeaturesDemo: React.FC = () => {
         }],
         fullText: demoData.currentTranscript,
         confidence: 0.9,
+        language: 'en',
         createdAt: new Date(),
         updatedAt: new Date()
       };
