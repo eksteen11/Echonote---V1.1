@@ -92,6 +92,7 @@ export class AITaskAllocationEngine {
       const dueDate = await this.suggestDueDate(task, context);
       
       allocatedTasks.push({
+        id: `task_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
         ...task,
         assignee: bestAssignee.id,
         priority,

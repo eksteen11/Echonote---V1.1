@@ -108,24 +108,22 @@ export class TranscriptionService {
               id: 'seg_1',
               speaker: 'John Doe',
               text: 'Welcome everyone to our quarterly review meeting.',
-              startTime: new Date(),
-              endTime: new Date(Date.now() + 5000),
+              startTime: 0,
+              endTime: 5,
               confidence: 0.95,
             },
             {
               id: 'seg_2',
               speaker: 'Jane Smith',
               text: 'Thank you John. Let\'s start with the Q3 results.',
-              startTime: new Date(Date.now() + 5000),
-              endTime: new Date(Date.now() + 10000),
+              startTime: 5,
+              endTime: 10,
               confidence: 0.92,
             },
           ],
           confidence: 0.93,
           language: 'en',
           createdAt: new Date(),
-          updatedAt: new Date(),
-          fullText: 'Welcome everyone to our quarterly review meeting. Thank you John. Let\'s start with the Q3 results.',
         },
       };
     } catch (error) {
@@ -206,9 +204,7 @@ export class SummaryService {
           sentiment: summaryResult.sentiment,
           topics: summaryResult.topics,
           aiGenerated: true,
-          confidence: summaryResult.confidence,
           createdAt: new Date(),
-          updatedAt: new Date()
         },
       };
     } catch (error) {

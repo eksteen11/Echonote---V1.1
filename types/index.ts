@@ -4,7 +4,7 @@ export interface User {
   name: string;
   avatar?: string;
   company?: string;
-  role: 'admin' | 'user' | 'viewer';
+  role: 'admin' | 'user' | 'viewer' | 'executive' | 'director' | 'manager' | 'lead';
   createdAt: Date;
   updatedAt: Date;
 }
@@ -272,21 +272,28 @@ export interface KnowledgeGraphMetadata {
 
 // Predictive Analytics Types
 export interface Prediction {
+  id: string;
   type: 'resource' | 'timeline' | 'workload' | 'risk' | 'opportunity';
   title: string;
   description: string;
   confidence: number; // 0-1
-  timeframe: 'short' | 'medium' | 'long';
-  actionable: boolean;
+  probability: number;
+  impact: 'low' | 'medium' | 'high';
+  timeframe: 'immediate' | 'short_term' | 'medium_term' | 'long_term';
+  affectedUsers: string[];
+  affectedDepartments: string[];
   recommendations: string[];
-  data: any;
+  createdAt: Date;
+  expiresAt: Date;
 }
 
 export interface ResourceForecast {
+  id: string;
   resourceType: 'personnel' | 'time' | 'budget' | 'equipment';
   currentCapacity: number;
-  predictedNeed: number;
-  timeframe: number; // in days
+  predictedDemand: number;
+  capacityGap: number;
+  timeframe: Date;
   confidence: number;
   recommendations: string[];
 }
@@ -304,7 +311,8 @@ export interface WorkloadPrediction {
   userId: string;
   currentWorkload: number; // 0-1
   predictedWorkload: number; // 0-1
-  timeframe: number; // in days
+  workloadTrend: string;
+  timeframe: Date;
   burnoutRisk: 'low' | 'medium' | 'high';
   recommendations: string[];
 }

@@ -32,13 +32,17 @@ export class CrossMeetingIntelligenceEngine {
     const patterns = this.analyzeMeetingPatterns(meetingIds);
     if (patterns.length > 0) {
       insights.push({
+        id: `pattern_${Date.now()}`,
         type: 'pattern',
         title: 'Meeting Pattern Detected',
         description: `Identified ${patterns.length} recurring patterns across meetings`,
-        severity: 'info',
-        actionable: true,
-        recommendations: patterns.map(p => `Optimize ${p.type} meetings for better efficiency`),
-        data: patterns
+        confidence: 0.8,
+        relatedMeetings: meetingIds,
+        participants: [],
+        tags: ['pattern', 'optimization'],
+        createdAt: new Date(),
+        lastUpdated: new Date(),
+        status: 'active'
       });
     }
 
@@ -100,25 +104,33 @@ export class CrossMeetingIntelligenceEngine {
 
     if (pendingCount > 0) {
       insights.push({
+        id: `decision_${Date.now()}`,
         type: 'decision',
         title: 'Pending Decisions Require Attention',
         description: `${pendingCount} decisions are waiting for implementation`,
-        severity: 'warning',
-        actionable: true,
-        recommendations: ['Follow up with assigned teams', 'Set clear deadlines for pending decisions'],
-        data: pendingDecisions.filter(d => d.status === 'pending')
+        confidence: 0.9,
+        relatedMeetings: meetingIds,
+        participants: [],
+        tags: ['decision', 'pending', 'attention'],
+        createdAt: new Date(),
+        lastUpdated: new Date(),
+        status: 'active'
       });
     }
 
     if (inProgressCount > 0) {
       insights.push({
+        id: `decision_progress_${Date.now()}`,
         type: 'decision',
         title: 'Decisions in Progress',
         description: `${inProgressCount} decisions are currently being implemented`,
-        severity: 'info',
-        actionable: false,
-        recommendations: ['Monitor progress regularly', 'Provide support where needed'],
-        data: pendingDecisions.filter(d => d.status === 'in_progress')
+        confidence: 0.7,
+        relatedMeetings: meetingIds,
+        participants: [],
+        tags: ['decision', 'in-progress', 'monitoring'],
+        createdAt: new Date(),
+        lastUpdated: new Date(),
+        status: 'active'
       });
     }
 
