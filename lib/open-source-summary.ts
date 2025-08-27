@@ -450,5 +450,17 @@ export const summaryUtils = {
   }
 };
 
-// Export default instance
-export const summaryService = new OpenSourceSummaryService();
+// Export singleton instance (lazy initialization to avoid SSR issues)
+let _summaryService: OpenSourceSummaryService | null = null;
+
+export const summaryService = {
+  get instance() {
+    if (typeof window === 'undefined') {
+      throw new Error('SummaryService can only be used in browser environment');
+    }
+    if (!_summaryService) {
+      _summaryService = new OpenSourceSummaryService();
+    }
+    return _summaryService;
+  }
+};

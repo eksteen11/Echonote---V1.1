@@ -136,7 +136,7 @@ export class TranscriptionService {
 
   async startRealTimeTranscription(): Promise<ApiResponse<boolean>> {
     try {
-      const success = await transcriptionService.startTranscription();
+      const success = await transcriptionService.instance.startTranscription();
       return {
         success,
         data: success
@@ -151,7 +151,7 @@ export class TranscriptionService {
 
   async stopRealTimeTranscription(): Promise<ApiResponse<void>> {
     try {
-      transcriptionService.stopTranscription();
+      transcriptionService.instance.stopTranscription();
       return {
         success: true,
         data: undefined
@@ -187,7 +187,7 @@ export class SummaryService {
     
     try {
       // Use open-source summary service
-      const summaryResult = await summaryService.generateSummary(transcript, {
+      const summaryResult = await summaryService.instance.generateSummary(transcript, {
         maxLength: options?.maxLength || 300,
         includeKeyPoints: options?.includeKeyPoints !== false,
         includeTopics: true,
@@ -306,14 +306,17 @@ export class CalendarService {
 
 // Main API service
 export class EchoPilotAPI {
-  private transcriptionService: TranscriptionService;
-  private summaryService: SummaryService;
-  private calendarService: CalendarService;
+  private transcriptionService?: TranscriptionService;
+  private summaryService?: SummaryService;
+  private calendarService?: CalendarService;
 
   constructor() {
-    this.transcriptionService = new TranscriptionService();
-    this.summaryService = new SummaryService();
-    this.calendarService = new CalendarService();
+    // Don't instantiate browser-only services during SSR
+    if (typeof window !== 'undefined') {
+      this.transcriptionService = new TranscriptionService();
+      this.summaryService = new SummaryService();
+      this.calendarService = new CalendarService();
+    }
   }
 
   // Meeting management
@@ -375,17 +378,47 @@ export class EchoPilotAPI {
 
   // Service getters
   get transcription() {
+    if (typeof window === 'undefined') {
+      throw new Error('TranscriptionService can only be used in browser environment');
+    }
+    if (!this.transcriptionService) {
+      this.transcriptionService = new TranscriptionService();
+    }
     return this.transcriptionService;
   }
 
   get summary() {
+    if (typeof window === 'undefined') {
+      throw new Error('SummaryService can only be used in browser environment');
+    }
+    if (!this.summaryService) {
+      this.summaryService = new SummaryService();
+    }
     return this.summaryService;
   }
 
   get calendar() {
+    if (typeof window === 'undefined') {
+      throw new Error('CalendarService can only be used in browser environment');
+    }
+    if (!this.calendarService) {
+      this.calendarService = new CalendarService();
+    }
     return this.calendarService;
   }
 }
 
-// Export singleton instance
-export const api = new EchoPilotAPI();
+// Export singleton instance (lazy initialization to avoid SSR issues)
+let _api: EchoPilotAPI | null = null;
+
+export const api = {
+  get instance() {
+    if (typeof window === 'undefined') {
+      throw new Error('EchoPilotAPI can only be used in browser environment');
+    }
+    if (!_api) {
+      _api = new EchoPilotAPI();
+    }
+    return _api;
+  }
+};

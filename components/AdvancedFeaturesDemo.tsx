@@ -30,8 +30,6 @@ import { cn } from '@/lib/utils';
 import { AITaskAllocationEngine } from '@/lib/ai-task-allocation';
 import { CrossMeetingIntelligenceEngine } from '@/lib/cross-meeting-intelligence';
 import { PredictiveAnalyticsEngine } from '@/lib/predictive-analytics';
-import { transcriptionService } from '@/lib/open-source-transcription';
-import { summaryService } from '@/lib/open-source-summary';
 
 interface DemoData {
   isTranscribing: boolean;
@@ -42,6 +40,7 @@ interface DemoData {
 }
 
 const AdvancedFeaturesDemo: React.FC = () => {
+  const [isClient, setIsClient] = useState(false);
   const [activeFeature, setActiveFeature] = useState<'transcription' | 'intelligence' | 'analytics'>('transcription');
   const [demoData, setDemoData] = useState<DemoData>({
     isTranscribing: false,
@@ -53,6 +52,11 @@ const AdvancedFeaturesDemo: React.FC = () => {
 
   const [transcriptText, setTranscriptText] = useState('');
   const [summaryResult, setSummaryResult] = useState<any>(null);
+
+  // Ensure component only runs on client side
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   // Demo data for different features
   const demoFeatures = {
@@ -106,15 +110,20 @@ const AdvancedFeaturesDemo: React.FC = () => {
       }
     }, 2000);
 
-    // Set up transcription service callbacks
-    transcriptionService.onResult((result) => {
-      if (result.isFinal) {
-        setDemoData(prev => ({
-          ...prev,
-          currentTranscript: prev.currentTranscript + ' ' + result.transcript
-        }));
-      }
-    });
+    // Set up transcription service callbacks (only in browser)
+    if (typeof window !== 'undefined') {
+      // Dynamically import transcription service only in browser
+      import('@/lib/open-source-transcription').then(({ transcriptionService }) => {
+        transcriptionService.instance.onResult((result) => {
+          if (result.isFinal) {
+            setDemoData(prev => ({
+              ...prev,
+              currentTranscript: prev.currentTranscript + ' ' + result.transcript
+            }));
+          }
+        });
+      }).catch(console.error);
+    }
   };
 
   // Generate summary demo
@@ -133,15 +142,17 @@ const AdvancedFeaturesDemo: React.FC = () => {
           endTime: 30,
           confidence: 0.9
         }],
-        fullText: demoData.currentTranscript,
         confidence: 0.9,
         language: 'en',
-        createdAt: new Date(),
-        updatedAt: new Date()
+        createdAt: new Date()
       };
 
-      const summary = await summaryService.generateSummary(mockTranscript);
-      setSummaryResult(summary);
+      // Dynamically import summary service only in browser
+      if (typeof window !== 'undefined') {
+        const { summaryService } = await import('@/lib/open-source-summary');
+        const summary = await summaryService.instance.generateSummary(mockTranscript);
+        setSummaryResult(summary);
+      }
     } catch (error) {
       console.error('Summary generation failed:', error);
     }
@@ -237,6 +248,9 @@ const AdvancedFeaturesDemo: React.FC = () => {
   };
 
   useEffect(() => {
+    // Only run on client side
+    if (!isClient) return;
+    
     // Auto-generate demo data when switching features
     if (activeFeature === 'intelligence') {
       generateInsightsDemo();
@@ -244,7 +258,7 @@ const AdvancedFeaturesDemo: React.FC = () => {
       generatePredictionsDemo();
       generateTaskAllocationsDemo();
     }
-  }, [activeFeature]);
+  }, [activeFeature, isClient]);
 
   const getFeatureColor = (feature: string) => {
     const colors = {
@@ -254,6 +268,24 @@ const AdvancedFeaturesDemo: React.FC = () => {
     };
     return colors[feature as keyof typeof colors] || 'from-gray-500 to-gray-600';
   };
+
+  // Don't render browser-only features during SSR
+  if (!isClient) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center">
+            <h1 className="text-3xl font-bold text-slate-900 mb-4">
+              Advanced AI Features Demo
+            </h1>
+            <p className="text-xl text-slate-600">
+              Loading demo features...
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100 p-6">

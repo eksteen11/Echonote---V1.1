@@ -387,6 +387,30 @@ export const transcriptionUtils = {
   }
 };
 
-// Export default instance
-export const transcriptionService = new OpenSourceTranscriptionService();
-export const audioTranscriptionService = new AudioFileTranscriptionService();
+// Export singleton instances (lazy initialization to avoid SSR issues)
+let _transcriptionService: OpenSourceTranscriptionService | null = null;
+let _audioTranscriptionService: AudioFileTranscriptionService | null = null;
+
+export const transcriptionService = {
+  get instance() {
+    if (typeof window === 'undefined') {
+      throw new Error('TranscriptionService can only be used in browser environment');
+    }
+    if (!_transcriptionService) {
+      _transcriptionService = new OpenSourceTranscriptionService();
+    }
+    return _transcriptionService;
+  }
+};
+
+export const audioTranscriptionService = {
+  get instance() {
+    if (typeof window === 'undefined') {
+      throw new Error('AudioFileTranscriptionService can only be used in browser environment');
+    }
+    if (!_audioTranscriptionService) {
+      _audioTranscriptionService = new AudioFileTranscriptionService();
+    }
+    return _audioTranscriptionService;
+  }
+};
