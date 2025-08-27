@@ -129,8 +129,8 @@ const AdvancedFeaturesDemo: React.FC = () => {
           id: 'demo_segment',
           text: demoData.currentTranscript,
           speaker: 'Demo User',
-          startTime: new Date(),
-          endTime: new Date(),
+          startTime: 0,
+          endTime: 30,
           confidence: 0.9
         }],
         fullText: demoData.currentTranscript,
