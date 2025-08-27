@@ -213,10 +213,6 @@ export interface CrossMeetingInsight {
   type: 'pattern' | 'decision' | 'dependency' | 'opportunity' | 'risk';
   title: string;
   description: string;
-  severity: 'info' | 'warning' | 'error' | 'critical';
-  actionable: boolean;
-  recommendations: string[];
-  data: any;
   confidence: number;
   relatedMeetings: string[];
   participants: string[];
