@@ -122,7 +122,7 @@ export class PredictiveAnalyticsEngine {
     predictions.push(...await this.generateResourcePredictions());
 
     // 2. Timeline predictions
-    predictions.push(...await this.generateTimelinePredictions());
+    predictions.push(...await this.generateTimelinePredictionsForGeneral());
 
     // 3. Risk predictions
     predictions.push(...await this.generateRiskPredictions());
@@ -131,7 +131,7 @@ export class PredictiveAnalyticsEngine {
     predictions.push(...await this.generateOpportunityPredictions());
 
     // 5. Workload predictions
-    predictions.push(...await this.generateWorkloadPredictions());
+    predictions.push(...await this.generateWorkloadPredictionsForGeneral());
 
     return predictions;
   }
@@ -159,8 +159,8 @@ export class PredictiveAnalyticsEngine {
         probability: 0.7,
         impact: 'high',
         timeframe: 'short_term',
-        affectedUsers: [...new Set(upcomingDeadlines.map(item => item.assignee))],
-        affectedDepartments: this.getDepartmentsFromUsers([...new Set(upcomingDeadlines.map(item => item.assignee))]),
+        affectedUsers: Array.from(new Set(upcomingDeadlines.map(item => item.assignee))),
+        affectedDepartments: this.getDepartmentsFromUsers(Array.from(new Set(upcomingDeadlines.map(item => item.assignee)))),
         recommendations: [
           'Consider redistributing workload',
           'Prioritize tasks by business impact',
@@ -177,7 +177,7 @@ export class PredictiveAnalyticsEngine {
   /**
    * Generate timeline-related predictions
    */
-  private async generateTimelinePredictions(): Promise<Prediction[]> {
+  private async generateTimelinePredictionsForGeneral(): Promise<Prediction[]> {
     const predictions: Prediction[] = [];
 
     // Analyze meeting patterns to predict timeline issues
@@ -235,8 +235,8 @@ export class PredictiveAnalyticsEngine {
         probability: 0.8,
         impact: 'high',
         timeframe: 'immediate',
-        affectedUsers: [...new Set(overdueTasks.map(item => item.assignee))],
-        affectedDepartments: this.getDepartmentsFromUsers([...new Set(overdueTasks.map(item => item.assignee))]),
+        affectedUsers: Array.from(new Set(overdueTasks.map(item => item.assignee))),
+        affectedDepartments: this.getDepartmentsFromUsers(Array.from(new Set(overdueTasks.map(item => item.assignee)))),
         recommendations: [
           'Review and reprioritize overdue tasks',
           'Assess resource availability',
@@ -321,7 +321,7 @@ export class PredictiveAnalyticsEngine {
   /**
    * Generate workload-related predictions
    */
-  private async generateWorkloadPredictions(): Promise<Prediction[]> {
+  private async generateWorkloadPredictionsForGeneral(): Promise<Prediction[]> {
     const predictions: Prediction[] = [];
 
     // Analyze individual workload patterns
@@ -680,7 +680,7 @@ export class PredictiveAnalyticsEngine {
     const types: Record<string, { avgDuration: number; participants: string[]; actionItems: number }> = {};
     
     for (const meeting of this.meetings) {
-      const type = meeting.type || 'general';
+      const type = meeting.tags.length > 0 ? meeting.tags[0] : 'general';
       const actionItems = this.actionItems.filter(item => item.meetingId === meeting.id).length;
       
       if (!types[type]) {

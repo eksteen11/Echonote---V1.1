@@ -19,9 +19,9 @@ export interface SummaryResult {
 }
 
 export class OpenSourceSummaryService {
-  private stopWords: Set<string>;
-  private positiveWords: Set<string>;
-  private negativeWords: Set<string>;
+  private stopWords!: Set<string>;
+  private positiveWords!: Set<string>;
+  private negativeWords!: Set<string>;
 
   constructor() {
     this.initializeWordLists();
@@ -73,7 +73,7 @@ export class OpenSourceSummaryService {
     } = options;
 
     // Extract text from transcript
-    const fullText = transcript.fullText || transcript.segments.map(s => s.text).join(' ');
+    const fullText = transcript.segments.map(s => s.text).join(' ');
     
     // Generate summary
     const summary = this.extractSummary(fullText, maxLength);
@@ -119,9 +119,14 @@ export class OpenSourceSummaryService {
       const positionScore = 1 / (index + 1); // Earlier sentences get higher scores
       const lengthScore = Math.min(words.length / 20, 1); // Optimal sentence length
       
+      // Calculate average word frequency for this sentence
+      const avgWordFrequency = words.reduce((sum, word) => {
+        return sum + (wordFrequency[word.toLowerCase()] || 0);
+      }, 0) / words.length;
+      
       return {
         sentence,
-        score: wordFrequency * 0.6 + positionScore * 0.3 + lengthScore * 0.1
+        score: avgWordFrequency * 0.6 + positionScore * 0.3 + lengthScore * 0.1
       };
     });
 
@@ -206,7 +211,7 @@ export class OpenSourceSummaryService {
     );
     
     // Remove duplicates and limit results
-    const uniqueTopics = [...new Set(sortedWords)];
+    const uniqueTopics = Array.from(new Set(sortedWords));
     return uniqueTopics.slice(0, maxTopics);
   }
 

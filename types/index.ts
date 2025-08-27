@@ -299,12 +299,17 @@ export interface ResourceForecast {
 }
 
 export interface TimelinePrediction {
+  id: string;
   projectId: string;
   currentProgress: number; // 0-1
+  currentDeadline: Date;
   predictedCompletion: Date;
   confidence: number;
   riskFactors: string[];
+  mitigationStrategies: string[];
   recommendations: string[];
+  createdAt: Date;
+  expiresAt: Date;
 }
 
 export interface WorkloadPrediction {

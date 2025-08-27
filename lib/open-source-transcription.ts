@@ -1,5 +1,13 @@
 import { Transcript, TranscriptSegment } from '@/types';
 
+// Declare SpeechRecognition types for browser compatibility
+declare global {
+  interface Window {
+    SpeechRecognition: any;
+    webkitSpeechRecognition: any;
+  }
+}
+
 export interface TranscriptionOptions {
   language?: string;
   continuous?: boolean;
@@ -15,7 +23,7 @@ export interface TranscriptionResult {
 }
 
 export class OpenSourceTranscriptionService {
-  private recognition: SpeechRecognition | null = null;
+  private recognition: any = null;
   private isSupported: boolean;
   private isRecording: boolean = false;
   private transcriptSegments: TranscriptSegment[] = [];
@@ -37,7 +45,7 @@ export class OpenSourceTranscriptionService {
   /**
    * Initialize the speech recognition
    */
-  private initializeRecognition(options: TranscriptionOptions = {}): SpeechRecognition | null {
+  private initializeRecognition(options: TranscriptionOptions = {}): any {
     if (!this.isSupported) {
       console.warn('Web Speech API not supported. Falling back to manual input.');
       return null;
@@ -102,7 +110,7 @@ export class OpenSourceTranscriptionService {
   /**
    * Handle transcription results
    */
-  private handleResult(event: SpeechRecognitionEvent): void {
+  private handleResult(event: any): void {
     const result = event.results[event.results.length - 1];
     const transcript = result[0].transcript;
     const confidence = result[0].confidence;
@@ -121,8 +129,8 @@ export class OpenSourceTranscriptionService {
         id: `segment_${Date.now()}_${Math.random()}`,
         text: transcript,
         speaker: 'Unknown', // Could be enhanced with speaker identification
-        startTime: new Date(),
-        endTime: new Date(),
+        startTime: Date.now() / 1000, // Convert to seconds
+        endTime: Date.now() / 1000, // Convert to seconds
         confidence
       });
     }
@@ -148,7 +156,7 @@ export class OpenSourceTranscriptionService {
   /**
    * Handle transcription errors
    */
-  private handleError(event: SpeechRecognitionErrorEvent): void {
+  private handleError(event: any): void {
     this.isRecording = false;
     const errorMessage = `Transcription error: ${event.error}`;
     console.error(errorMessage);
@@ -166,12 +174,11 @@ export class OpenSourceTranscriptionService {
       id: `transcript_${Date.now()}`,
       meetingId: 'current',
       segments: this.transcriptSegments,
-      fullText: this.transcriptSegments.map(segment => segment.text).join(' '),
       confidence: this.transcriptSegments.length > 0 
         ? this.transcriptSegments.reduce((sum, seg) => sum + seg.confidence, 0) / this.transcriptSegments.length
         : 0,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      language: 'en',
+      createdAt: new Date()
     };
   }
 

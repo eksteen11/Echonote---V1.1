@@ -159,13 +159,17 @@ export class CrossMeetingIntelligenceEngine {
 
     if (dependencies.length > 0) {
       insights.push({
+        id: `dependency_${Date.now()}`,
         type: 'dependency',
         title: 'Critical Dependencies Identified',
         description: `${dependencies.length} dependencies may block progress`,
-        severity: 'warning',
-        actionable: true,
-        recommendations: ['Prioritize blocking tasks', 'Create dependency timeline', 'Identify alternative paths'],
-        data: dependencies
+        confidence: 0.8,
+        relatedMeetings: meetingIds,
+        participants: [],
+        tags: ['dependency', 'blocking', 'critical'],
+        createdAt: new Date(),
+        lastUpdated: new Date(),
+        status: 'active'
       });
     }
 
@@ -178,24 +182,32 @@ export class CrossMeetingIntelligenceEngine {
 
     // Mock opportunity detection
     insights.push({
+      id: `opportunity_${Date.now()}`,
       type: 'opportunity',
       title: 'Efficiency Improvement Opportunity',
       description: 'Meetings could be 20% shorter with better agenda management',
-      severity: 'info',
-      actionable: true,
-      recommendations: ['Implement strict agenda timeboxes', 'Use async updates for routine items', 'Train facilitators on time management'],
-      data: { potentialSavings: '20%', estimatedHours: 8 }
+      confidence: 0.7,
+      relatedMeetings: meetingIds,
+      participants: [],
+      tags: ['opportunity', 'efficiency', 'optimization'],
+      createdAt: new Date(),
+      lastUpdated: new Date(),
+      status: 'active'
     });
 
     // Mock risk detection
     insights.push({
+      id: `risk_${Date.now()}`,
       type: 'risk',
       title: 'Resource Allocation Risk',
       description: 'Multiple high-priority projects may compete for the same resources',
-      severity: 'warning',
-      actionable: true,
-      recommendations: ['Review project priorities', 'Assess resource capacity', 'Create resource allocation plan'],
-      data: { affectedProjects: 3, resourceType: 'Developers' }
+      confidence: 0.8,
+      relatedMeetings: meetingIds,
+      participants: [],
+      tags: ['risk', 'resource', 'allocation'],
+      createdAt: new Date(),
+      lastUpdated: new Date(),
+      status: 'active'
     });
 
     return insights;
@@ -222,7 +234,7 @@ export class CrossMeetingIntelligenceEngine {
         id: insightId,
         type: 'insight',
         label: insight.title,
-        metadata: { type: insight.type, severity: insight.severity }
+        metadata: { type: insight.type, confidence: insight.confidence }
       });
 
               // Connect insights to meetings
@@ -231,7 +243,7 @@ export class CrossMeetingIntelligenceEngine {
             source: meetingId,
             target: insightId,
             type: 'generates',
-            weight: insight.severity === 'critical' ? 1.0 : 0.5
+            weight: insight.confidence > 0.8 ? 1.0 : 0.5
           });
         });
     });
