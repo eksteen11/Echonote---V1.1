@@ -209,6 +209,7 @@ export interface HistoricalTaskData {
 
 // Cross-Meeting Intelligence Types
 export interface CrossMeetingInsight {
+  id: string;
   type: 'pattern' | 'decision' | 'dependency' | 'opportunity' | 'risk';
   title: string;
   description: string;
@@ -216,6 +217,13 @@ export interface CrossMeetingInsight {
   actionable: boolean;
   recommendations: string[];
   data: any;
+  confidence: number;
+  relatedMeetings: string[];
+  participants: string[];
+  tags: string[];
+  createdAt: Date;
+  lastUpdated: Date;
+  status: string;
 }
 
 export interface DecisionTracker {
