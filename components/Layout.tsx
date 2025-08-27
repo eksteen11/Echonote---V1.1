@@ -141,9 +141,9 @@ export default function Layout({ children }: LayoutProps) {
         {/* User section */}
         <div className="p-4 border-t border-white/30">
           <div className="flex items-center gap-3 p-3 rounded-xl hover:bg-white/20 transition-colors cursor-pointer">
-            {user?.avatar_url ? (
+            {user?.avatar ? (
               <img 
-                src={user.avatar_url} 
+                src={user.avatar} 
                 alt={user.name} 
                 className="w-10 h-10 rounded-full object-cover"
               />

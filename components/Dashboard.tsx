@@ -87,35 +87,35 @@ export default function Dashboard() {
       // Get upcoming meetings from real data and convert to Dashboard format
       const upcoming = meetings
         .filter(m => m.status === 'scheduled')
-        .sort((a, b) => new Date(a.start_time).getTime() - new Date(b.start_time).getTime())
+        .sort((a, b) => a.startTime.getTime() - b.startTime.getTime())
         .slice(0, 3)
         .map(m => ({
           id: m.id,
           title: m.title,
           description: m.description,
-          startTime: new Date(m.start_time),
-          endTime: m.end_time ? new Date(m.end_time) : undefined,
+          startTime: m.startTime,
+          endTime: m.endTime,
           duration: m.duration,
           participants: m.participants,
           platform: m.platform,
           status: m.status,
-          recordingUrl: m.recording_url,
-          transcriptUrl: m.transcript_url,
+          recordingUrl: m.recordingUrl,
+          transcriptUrl: m.transcriptUrl,
           summary: m.summary,
-          actionItems: actionItems.filter(a => a.meeting_id === m.id).map(a => ({
+          actionItems: actionItems.filter(a => a.meetingId === m.id).map(a => ({
             id: a.id,
-            meetingId: a.meeting_id,
+            meetingId: a.meetingId,
             description: a.description,
             assignee: a.assignee,
-            dueDate: a.due_date ? new Date(a.due_date) : undefined,
+            dueDate: a.dueDate,
             priority: a.priority,
             status: a.status,
-            createdAt: new Date(a.created_at),
-            updatedAt: new Date(a.updated_at),
+            createdAt: a.createdAt,
+            updatedAt: a.updatedAt,
           })),
           tags: m.tags,
-          createdAt: new Date(m.created_at),
-          updatedAt: new Date(m.updated_at),
+          createdAt: m.createdAt,
+          updatedAt: m.updatedAt,
         }));
       
       setUpcomingMeetings(upcoming);

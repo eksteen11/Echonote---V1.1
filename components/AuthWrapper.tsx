@@ -2,12 +2,22 @@
 
 import React from 'react';
 import { useAuth } from '@/lib/auth-context';
+import { usePathname } from 'next/navigation';
 import AuthPage from './AuthPage';
 import Layout from './Layout';
 import Dashboard from './Dashboard';
+import Meetings from './Meetings';
+import ActionItems from './ActionItems';
+import Summaries from './Summaries';
+import Settings from './Settings';
+import SubscriptionPage from './SubscriptionPage';
+import TeamIntelligenceDashboard from './TeamIntelligenceDashboard';
+import AdvancedFeaturesDemo from './AdvancedFeaturesDemo';
+import ProductHuntDemo from './ProductHuntDemo';
 
 const AuthWrapper: React.FC = () => {
   const { user, isLoading } = useAuth();
+  const pathname = usePathname();
 
   if (isLoading) {
     return (
@@ -30,9 +40,35 @@ const AuthWrapper: React.FC = () => {
     return <AuthPage />;
   }
 
+  // Render different content based on the current route
+  const renderContent = () => {
+    switch (pathname) {
+      case '/':
+        return <Dashboard />;
+      case '/meetings':
+        return <Meetings />;
+      case '/action-items':
+        return <ActionItems />;
+      case '/summaries':
+        return <Summaries />;
+      case '/settings':
+        return <Settings />;
+      case '/subscription':
+        return <SubscriptionPage />;
+      case '/team-intelligence':
+        return <TeamIntelligenceDashboard />;
+      case '/demo':
+        return <AdvancedFeaturesDemo />;
+      case '/product-hunt':
+        return <ProductHuntDemo />;
+      default:
+        return <Dashboard />;
+    }
+  };
+
   return (
     <Layout>
-      <Dashboard />
+      {renderContent()}
     </Layout>
   );
 };

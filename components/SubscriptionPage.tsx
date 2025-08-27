@@ -19,11 +19,12 @@ import { paymentService, SubscriptionPlan, PaymentMethod } from '@/lib/payment-s
 import { cn } from '@/lib/utils';
 
 const SubscriptionPage: React.FC = () => {
-  const { user, subscription, upgradeSubscription } = useAuth();
+  const { user } = useAuth();
   const [plans, setPlans] = useState<SubscriptionPlan[]>([]);
   const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
   const [selectedPlan, setSelectedPlan] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [subscription, setSubscription] = useState<any>(null);
   const [showPaymentForm, setShowPaymentForm] = useState(false);
   const [paymentForm, setPaymentForm] = useState({
     cardNumber: '',
@@ -53,7 +54,7 @@ const SubscriptionPage: React.FC = () => {
 
   const handlePaymentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
+    setLoading(true);
 
     try {
       // Validate card
@@ -88,7 +89,7 @@ const SubscriptionPage: React.FC = () => {
 
         if (result.success) {
           // Update local subscription
-          await upgradeSubscription(selectedPlan as any);
+          // await upgradeSubscription(selectedPlan as any); // This line was removed as per the edit hint
           alert('Subscription upgraded successfully!');
           setShowPaymentForm(false);
           setSelectedPlan(null);
@@ -106,7 +107,7 @@ const SubscriptionPage: React.FC = () => {
     } catch (error) {
       alert('An error occurred. Please try again.');
     } finally {
-      setIsLoading(false);
+      setLoading(false);
     }
   };
 
@@ -404,10 +405,10 @@ const SubscriptionPage: React.FC = () => {
                 </button>
                 <button
                   type="submit"
-                  disabled={isLoading}
+                  disabled={loading}
                   className="flex-1 py-2 px-4 bg-primary-500 text-white rounded-lg hover:bg-primary-600 disabled:opacity-50 transition-colors"
                 >
-                  {isLoading ? 'Processing...' : 'Add Payment Method'}
+                  {loading ? 'Processing...' : 'Add Payment Method'}
                 </button>
               </div>
             </form>
