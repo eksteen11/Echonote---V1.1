@@ -17,6 +17,7 @@ import { cn } from '@/lib/utils';
 import { formatDate, formatDuration, getRelativeTime } from '@/lib/utils';
 import { DashboardStats, Meeting, ActionItem } from '@/types';
 import { useAuth } from '@/lib/auth-context';
+import PageHeader from './PageHeader';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -153,10 +154,16 @@ export default function Dashboard() {
       className="space-y-8"
     >
       {/* Header */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900">Dashboard</h1>
-        <p className="text-slate-600">Welcome back! Here's what's happening with your meetings.</p>
-      </motion.div>
+      <PageHeader 
+        title="Dashboard"
+        subtitle="Welcome back! Here's what's happening with your meetings."
+        actions={
+          <button className="btn-primary">
+            <Calendar className="w-4 h-4 mr-2" />
+            New Meeting
+          </button>
+        }
+      />
 
       {/* Stats Cards */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

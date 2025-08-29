@@ -23,6 +23,7 @@ import {
 import { cn } from '@/lib/utils';
 import { useRouter, usePathname } from 'next/navigation';
 import { useAuth } from '@/lib/auth-context';
+import Breadcrumbs from './Breadcrumbs';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -106,7 +107,7 @@ export default function Layout({ children }: LayoutProps) {
             <div className="w-8 h-8 bg-gradient-to-br from-primary-500 to-accent-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-sm">EP</span>
             </div>
-            <span className="text-xl font-bold text-gradient">EchoPilot</span>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary-600 to-accent-600 bg-clip-text text-transparent">EchoPilot</span>
           </div>
           {isMobile && (
             <button
@@ -210,6 +211,7 @@ export default function Layout({ children }: LayoutProps) {
 
         {/* Page content */}
         <main className="p-4 lg:p-8">
+          <Breadcrumbs />
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}

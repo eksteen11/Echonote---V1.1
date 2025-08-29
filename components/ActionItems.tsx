@@ -24,6 +24,7 @@ import {
 import { cn } from '@/lib/utils';
 import { formatDate, formatDuration, getRelativeTime, getPriorityColor, getStatusColor } from '@/lib/utils';
 import { ActionItem, Meeting } from '@/types';
+import PageHeader from '@/components/PageHeader';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -216,17 +217,17 @@ export default function ActionItems() {
       animate="visible"
       className="space-y-8"
     >
-      {/* Header */}
-      <motion.div variants={itemVariants} className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-slate-900">Action Items</h1>
-          <p className="text-slate-600">Track and manage tasks from your meetings</p>
-        </div>
-        <button className="btn-primary">
-          <Plus className="w-5 h-5 mr-2" />
-          New Action Item
-        </button>
-      </motion.div>
+        {/* Header */}
+        <PageHeader
+          title="Action Items"
+          subtitle="Track and manage tasks from your meetings"
+          actions={
+            <button className="btn-primary">
+              <Plus className="w-5 h-5 mr-2" />
+              New Action Item
+            </button>
+          }
+        />
 
       {/* Stats */}
       <motion.div variants={itemVariants} className="grid grid-cols-1 md:grid-cols-4 gap-6">

@@ -27,6 +27,7 @@ import {
 import { cn } from '@/lib/utils';
 import { formatDate, formatDuration, getRelativeTime } from '@/lib/utils';
 import { Summary, Meeting, ActionItem } from '@/types';
+import PageHeader from '@/components/PageHeader';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -201,10 +202,7 @@ export default function Summaries() {
       className="space-y-8"
     >
       {/* Header */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900">Meeting Summaries</h1>
-        <p className="text-slate-600">AI-generated insights and key points from your meetings</p>
-      </motion.div>
+      <PageHeader title="Meeting Summaries" subtitle="AI-generated insights and key points from your meetings" />
 
       {/* Filters and Search */}
       <motion.div variants={itemVariants} className="card">

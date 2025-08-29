@@ -1,5 +1,5 @@
-import AuthWrapper from '@/components/AuthWrapper';
+import LandingPage from '@/components/LandingPage';
 
 export default function HomePage() {
-  return <AuthWrapper />;
+  return <LandingPage />;
 }

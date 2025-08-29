@@ -22,6 +22,8 @@ import {
   CheckSquare
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { useAuth } from '@/lib/auth-context';
+import PageHeader from '@/components/PageHeader';
 import { UserPreferences } from '@/types';
 
 const containerVariants = {
@@ -107,10 +109,7 @@ export default function Settings() {
       className="space-y-8"
     >
       {/* Header */}
-      <motion.div variants={itemVariants} className="space-y-2">
-        <h1 className="text-3xl font-bold text-slate-900">Settings</h1>
-        <p className="text-slate-600">Customize your EchoPilot experience</p>
-      </motion.div>
+      <PageHeader title="Settings" subtitle="Customize your EchoPilot experience" />
 
       {/* Settings Layout */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">

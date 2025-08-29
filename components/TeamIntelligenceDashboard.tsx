@@ -23,6 +23,7 @@ import {
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { CrossMeetingInsight, Prediction, ResourceForecast, WorkloadPrediction } from '@/types';
+import PageHeader from './PageHeader';
 
 interface TeamIntelligenceData {
   insights: CrossMeetingInsight[];
@@ -298,36 +299,29 @@ const TeamIntelligenceDashboard: React.FC = () => {
         className="max-w-7xl mx-auto"
       >
         {/* Header */}
-        <motion.div variants={itemVariants} className="mb-8">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="p-3 bg-gradient-to-r from-blue-500 to-purple-600 rounded-xl">
-              <Brain className="w-8 h-8 text-white" />
+        <PageHeader 
+          title="Team Intelligence Dashboard"
+          subtitle="AI-powered insights and predictions for your team"
+          actions={
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-medium text-slate-700">Timeframe:</span>
+              {(['7d', '30d', '90d'] as const).map((timeframe) => (
+                <button
+                  key={timeframe}
+                  onClick={() => setSelectedTimeframe(timeframe)}
+                  className={cn(
+                    'px-3 py-1 text-sm font-medium rounded-lg transition-colors',
+                    selectedTimeframe === timeframe
+                      ? 'bg-blue-500 text-white'
+                      : 'bg-white text-slate-600 hover:bg-slate-100'
+                  )}
+                >
+                  {timeframe}
+                </button>
+              ))}
             </div>
-            <div>
-              <h1 className="text-3xl font-bold text-slate-900">Team Intelligence Dashboard</h1>
-              <p className="text-slate-600">AI-powered insights and predictions for your team</p>
-            </div>
-          </div>
-          
-          {/* Timeframe Selector */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm font-medium text-slate-700">Timeframe:</span>
-            {(['7d', '30d', '90d'] as const).map((timeframe) => (
-              <button
-                key={timeframe}
-                onClick={() => setSelectedTimeframe(timeframe)}
-                className={cn(
-                  'px-3 py-1 text-sm font-medium rounded-lg transition-colors',
-                  selectedTimeframe === timeframe
-                    ? 'bg-blue-500 text-white'
-                    : 'bg-white text-slate-600 hover:bg-slate-100'
-                )}
-              >
-                {timeframe}
-              </button>
-            ))}
-          </div>
-        </motion.div>
+          }
+        />
 
         {/* Navigation Tabs */}
         <motion.div variants={itemVariants} className="mb-6">
