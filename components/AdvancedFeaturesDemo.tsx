@@ -82,47 +82,65 @@ const AdvancedFeaturesDemo: React.FC = () => {
 
   // Start real-time transcription demo
   const startTranscriptionDemo = async () => {
+    console.log('Starting transcription demo...');
     setDemoData(prev => ({ ...prev, isTranscribing: true }));
     
-    // Simulate real-time transcription
-    const demoTexts = [
-      "Welcome to our quarterly planning meeting.",
-      "Today we'll discuss the Q4 roadmap and budget allocation.",
-      "I think we should focus on the mobile app development first.",
-      "That's a great point, Sarah. What's your timeline estimate?",
-      "We need to allocate at least 3 developers to this project.",
-      "I agree, and we should also consider the marketing budget.",
-      "Let's set a deadline for the end of November.",
-      "Perfect, I'll create action items for everyone."
-    ];
-
-    let currentIndex = 0;
-    const interval = setInterval(() => {
-      if (currentIndex < demoTexts.length) {
-        setDemoData(prev => ({
-          ...prev,
-          currentTranscript: prev.currentTranscript + ' ' + demoTexts[currentIndex]
-        }));
-        currentIndex++;
-      } else {
-        clearInterval(interval);
-        setDemoData(prev => ({ ...prev, isTranscribing: false }));
-      }
-    }, 2000);
-
-    // Set up transcription service callbacks (only in browser)
-    if (typeof window !== 'undefined') {
+    try {
       // Dynamically import transcription service only in browser
-      import('@/lib/open-source-transcription').then(({ transcriptionService }) => {
+      if (typeof window !== 'undefined') {
+        console.log('Browser environment detected, importing transcription service...');
+        const { transcriptionService } = await import('@/lib/open-source-transcription');
+        console.log('Transcription service imported successfully:', transcriptionService);
+        
+        // Set up real-time transcription callbacks
         transcriptionService.instance.onResult((result) => {
+          console.log('Transcription result received:', result);
           if (result.isFinal) {
+            setDemoData(prev => ({
+              ...prev,
+              currentTranscript: prev.currentTranscript + ' ' + result.transcript
+            }));
+          } else {
+            // Show interim results
             setDemoData(prev => ({
               ...prev,
               currentTranscript: prev.currentTranscript + ' ' + result.transcript
             }));
           }
         });
-      }).catch(console.error);
+
+        transcriptionService.instance.onEnd(() => {
+          console.log('Transcription ended');
+          setDemoData(prev => ({ ...prev, isTranscribing: false }));
+        });
+
+        transcriptionService.instance.onError((error) => {
+          console.error('Transcription error:', error);
+          setDemoData(prev => ({ ...prev, isTranscribing: false }));
+        });
+
+        // Start real transcription
+        console.log('Starting real transcription...');
+        const success = await transcriptionService.instance.startTranscription({
+          language: 'en-US',
+          continuous: true,
+          interimResults: true
+        });
+
+        console.log('Transcription start result:', success);
+
+        if (!success) {
+          console.log('Real transcription failed, falling back to demo...');
+          // Fallback to demo if real transcription fails
+          startDemoTranscription();
+        }
+      } else {
+        console.log('Not in browser environment, using demo transcription');
+        startDemoTranscription();
+      }
+    } catch (error) {
+      console.error('Failed to start real transcription, falling back to demo:', error);
+      startDemoTranscription();
     }
   };
 
@@ -247,6 +265,54 @@ const AdvancedFeaturesDemo: React.FC = () => {
     setDemoData(prev => ({ ...prev, taskAllocations: mockAllocations }));
   };
 
+  // Fallback demo transcription
+  const startDemoTranscription = () => {
+    console.log('Starting demo transcription...');
+    const demoTexts = [
+      "Welcome to our quarterly planning meeting.",
+      "Today we'll discuss the Q4 roadmap and budget allocation.",
+      "I think we should focus on the mobile app development first.",
+      "That's a great point, Sarah. What's your timeline estimate?",
+      "We need to allocate at least 3 developers to this project.",
+      "I agree, and we should also consider the marketing budget.",
+      "Let's set a deadline for the end of November.",
+      "Perfect, I'll create action items for everyone."
+    ];
+
+    let currentIndex = 0;
+    const interval = setInterval(() => {
+      if (currentIndex < demoTexts.length) {
+        setDemoData(prev => ({
+          ...prev,
+          currentTranscript: prev.currentTranscript + ' ' + demoTexts[currentIndex]
+        }));
+        currentIndex++;
+      } else {
+        clearInterval(interval);
+        setDemoData(prev => ({ ...prev, isTranscribing: false }));
+      }
+    }, 2000);
+  };
+
+  // Stop transcription demo
+  const stopTranscriptionDemo = async () => {
+    try {
+      if (typeof window !== 'undefined') {
+        const { transcriptionService } = await import('@/lib/open-source-transcription');
+        transcriptionService.instance.stopTranscription();
+      }
+    } catch (error) {
+      console.error('Failed to stop transcription:', error);
+    }
+    setDemoData(prev => ({ ...prev, isTranscribing: false }));
+  };
+
+  // Clear transcript
+  const clearTranscript = () => {
+    setDemoData(prev => ({ ...prev, currentTranscript: '' }));
+    setSummaryResult(null);
+  };
+
   useEffect(() => {
     // Only run on client side
     if (!isClient) return;
@@ -359,14 +425,33 @@ const AdvancedFeaturesDemo: React.FC = () => {
 
                 <div className="space-y-6">
                   {/* Controls */}
-                  <div className="flex gap-4">
+                  <div className="flex gap-4 flex-wrap">
                     <button
                       onClick={startTranscriptionDemo}
                       disabled={demoData.isTranscribing}
                       className="flex items-center gap-2 px-6 py-3 bg-blue-500 text-white rounded-xl font-medium hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
                     >
-                      {demoData.isTranscribing ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
-                      {demoData.isTranscribing ? 'Pause' : 'Start'} Demo
+                      <Mic className="w-4 h-4" />
+                      {demoData.isTranscribing ? 'Recording...' : 'Start Real Transcription'}
+                    </button>
+                    
+                    {demoData.isTranscribing && (
+                      <button
+                        onClick={stopTranscriptionDemo}
+                        className="flex items-center gap-2 px-6 py-3 bg-red-500 text-white rounded-xl font-medium hover:bg-red-600 transition-colors"
+                      >
+                        <Pause className="w-4 h-4" />
+                        Stop Transcription
+                      </button>
+                    )}
+                    
+                    <button
+                      onClick={clearTranscript}
+                      disabled={!demoData.currentTranscript}
+                      className="flex items-center gap-2 px-6 py-3 bg-gray-500 text-white rounded-xl font-medium hover:bg-gray-600 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                    >
+                      <XCircle className="w-4 h-4" />
+                      Clear Transcript
                     </button>
                     
                     <button
